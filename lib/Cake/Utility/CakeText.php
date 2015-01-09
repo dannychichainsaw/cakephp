@@ -21,7 +21,7 @@
  *
  * @package       Cake.Utility
  */
-class String {
+class CakeText {
 
 /**
  * Generate a random UUID
@@ -175,7 +175,7 @@ class String {
 /**
  * Replaces variable placeholders inside a $str with any given $data. Each key in the $data array
  * corresponds to a variable placeholder name in $str.
- * Example: `String::insert(':name is :age years old.', array('name' => 'Bob', '65'));`
+ * Example: `CakeText::insert(':name is :age years old.', array('name' => 'Bob', '65'));`
  * Returns: Bob is 65 years old.
  *
  * Available $options are:
@@ -185,7 +185,7 @@ class String {
  * - escape: The character or string used to escape the before character / string (Defaults to `\`)
  * - format: A regex to use for matching variable placeholders. Default is: `/(?<!\\)\:%s/`
  *   (Overwrites before, after, breaks escape / clean)
- * - clean: A boolean or array with instructions for String::cleanInsert
+ * - clean: A boolean or array with instructions for CakeText::cleanInsert
  *
  * @param string $str A string containing variable placeholders
  * @param array $data A key => val array where each key stands for a placeholder variable name
@@ -201,7 +201,7 @@ class String {
 		$format = $options['format'];
 		$data = (array)$data;
 		if (empty($data)) {
-			return ($options['clean']) ? String::cleanInsert($str, $options) : $str;
+			return ($options['clean']) ? CakeText::cleanInsert($str, $options) : $str;
 		}
 
 		if (!isset($format)) {
@@ -220,7 +220,7 @@ class String {
 				$offset = $pos + strlen($val);
 				$str = substr_replace($str, $val, $pos, 1);
 			}
-			return ($options['clean']) ? String::cleanInsert($str, $options) : $str;
+			return ($options['clean']) ? CakeText::cleanInsert($str, $options) : $str;
 		}
 
 		asort($data);
@@ -243,19 +243,19 @@ class String {
 		if (!isset($options['format']) && isset($options['before'])) {
 			$str = str_replace($options['escape'] . $options['before'], $options['before'], $str);
 		}
-		return ($options['clean']) ? String::cleanInsert($str, $options) : $str;
+		return ($options['clean']) ? CakeText::cleanInsert($str, $options) : $str;
 	}
 
 /**
- * Cleans up a String::insert() formatted string with given $options depending on the 'clean' key in
+ * Cleans up a CakeText::insert() formatted string with given $options depending on the 'clean' key in
  * $options. The default method used is text but html is also available. The goal of this function
  * is to replace all whitespace and unneeded markup around placeholders that did not get replaced
- * by String::insert().
+ * by CakeText::insert().
  *
- * @param string $str String to clean.
+ * @param string $str CakeText to clean.
  * @param array $options Options list.
  * @return string
- * @see String::insert()
+ * @see CakeText::insert()
  */
 	public static function cleanInsert($str, $options) {
 		$clean = $options['clean'];
@@ -284,7 +284,7 @@ class String {
 				$str = preg_replace($kleenex, $clean['replacement'], $str);
 				if ($clean['andText']) {
 					$options['clean'] = array('method' => 'text');
-					$str = String::cleanInsert($str, $options);
+					$str = CakeText::cleanInsert($str, $options);
 				}
 				break;
 			case 'text':
@@ -318,7 +318,7 @@ class String {
  *
  * - `width` The width to wrap to. Defaults to 72.
  * - `wordWrap` Only wrap on words breaks (spaces) Defaults to true.
- * - `indent` String to indent with. Defaults to null.
+ * - `indent` CakeText to indent with. Defaults to null.
  * - `indentAt` 0 based index to start indenting at. Defaults to 0.
  *
  * @param string $text The text to format.
@@ -470,7 +470,7 @@ class String {
  * - `ellipsis` Will be used as Beginning and prepended to the trimmed string
  * - `exact` If false, $text will not be cut mid-word
  *
- * @param string $text String to truncate.
+ * @param string $text CakeText to truncate.
  * @param int $length Length of returned string, including ellipsis.
  * @param array $options An array of options.
  * @return string Trimmed string.
@@ -511,7 +511,7 @@ class String {
  * - `exact` If false, $text will not be cut mid-word
  * - `html` If true, HTML tags would be handled correctly
  *
- * @param string $text String to truncate.
+ * @param string $text CakeText to truncate.
  * @param int $length Length of returned string, including ellipsis.
  * @param array $options An array of html attributes and options.
  * @return string Trimmed string.
@@ -630,7 +630,7 @@ class String {
  * Extracts an excerpt from the text surrounding the phrase with a number of characters on each side
  * determined by radius.
  *
- * @param string $text String to search the phrase in
+ * @param string $text CakeText to search the phrase in
  * @param string $phrase Phrase that will be searched for
  * @param int $radius The amount of characters that will be returned on each side of the founded phrase
  * @param string $ellipsis Ending that will be appended
@@ -671,15 +671,18 @@ class String {
 	}
 
 /**
- * Creates a comma separated list where the last two items are joined with 'and', forming natural English
+ * Creates a comma separated list where the last two items are joined with 'and', forming natural language.
  *
- * @param array $list The list to be joined
- * @param string $and The word used to join the last and second last items together with. Defaults to 'and'
- * @param string $separator The separator used to join all the other items together. Defaults to ', '
+ * @param array $list The list to be joined.
+ * @param string $and The word used to join the last and second last items together with. Defaults to 'and'.
+ * @param string $separator The separator used to join all the other items together. Defaults to ', '.
  * @return string The glued together string.
  * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/text.html#TextHelper::toList
  */
-	public static function toList($list, $and = 'and', $separator = ', ') {
+	public static function toList($list, $and = null, $separator = ', ') {
+		if ($and === null) {
+			$and = __d('cake', 'and');
+		}
 		if (count($list) > 1) {
 			return implode($separator, array_slice($list, null, -1)) . ' ' . $and . ' ' . array_pop($list);
 		}
