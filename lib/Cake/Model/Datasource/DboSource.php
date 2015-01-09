@@ -2477,7 +2477,7 @@ class DboSource extends DataSource {
 		$virtual = array();
 		foreach ($fields as $field) {
 			$virtualField = $this->name($alias . $this->virtualFieldSeparator . $field);
-			$expression = $this->_quoteFields($Model->getVirtualField($field));
+			$expression = $Model->getVirtualField($field);//$this->_quoteFields($Model->getVirtualField($field));
 			$virtual[] = '(' . $expression . ") {$this->alias} {$virtualField}";
 		}
 		return $virtual;
@@ -2871,11 +2871,11 @@ class DboSource extends DataSource {
 			$end = preg_quote($this->endQuote);
 		}
 		$conditions = str_replace(array($start, $end), '', $conditions);
-		/**$conditions = preg_replace_callback(
+		$conditions = preg_replace_callback(
 			'/(?:[\'\"][^\'\"\\\]*(?:\\\.[^\'\"\\\]*)*[\'\"])|([a-z0-9_][a-z0-9\\-_]*\\.[a-z0-9_][a-z0-9_\\-]*)/i',
 			array(&$this, '_quoteMatchedField'),
 			$conditions
-		);**/
+		);
 		if ($conditions !== null) {
 			return $conditions;
 		}
