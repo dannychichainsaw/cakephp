@@ -59,6 +59,7 @@ class Postgres extends DboSource {
 		'primary_key' => array('name' => 'serial NOT NULL'),
 		'string' => array('name' => 'varchar', 'limit' => '255'),
 		'text' => array('name' => 'text'),
+		'json' => array('name' => 'text'),
 		'integer' => array('name' => 'integer', 'formatter' => 'intval'),
 		'biginteger' => array('name' => 'bigint', 'limit' => '20'),
 		'float' => array('name' => 'float', 'formatter' => 'floatval'),
